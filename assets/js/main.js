@@ -1,0 +1,280 @@
+/**
+* Template Name: Landify
+* Template URL: https://bootstrapmade.com/landify-bootstrap-landing-page-template/
+* Updated: Aug 04 2025 with Bootstrap v5.3.7
+* Author: BootstrapMade.com
+* License: https://bootstrapmade.com/license/
+*/
+
+(function() {
+  "use strict";
+
+  /**
+   * Apply .scrolled class to the body as the page is scrolled down
+   */
+  function toggleScrolled() {
+    const selectBody = document.querySelector('body');
+    const selectHeader = document.querySelector('#header');
+    if (!selectHeader.classList.contains('scroll-up-sticky') && !selectHeader.classList.contains('sticky-top') && !selectHeader.classList.contains('fixed-top')) return;
+    window.scrollY > 100 ? selectBody.classList.add('scrolled') : selectBody.classList.remove('scrolled');
+  }
+
+  document.addEventListener('scroll', toggleScrolled);
+  window.addEventListener('load', toggleScrolled);
+
+  /**
+   * Mobile nav toggle
+   */
+  const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
+
+  function mobileNavToogle() {
+    document.querySelector('body').classList.toggle('mobile-nav-active');
+    mobileNavToggleBtn.classList.toggle('bi-list');
+    mobileNavToggleBtn.classList.toggle('bi-x');
+  }
+  if (mobileNavToggleBtn) {
+    mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
+  }
+
+  /**
+   * Hide mobile nav on same-page/hash links
+   */
+  document.querySelectorAll('#navmenu a').forEach(navmenu => {
+    navmenu.addEventListener('click', () => {
+      if (document.querySelector('.mobile-nav-active')) {
+        mobileNavToogle();
+      }
+    });
+
+  });
+
+  /**
+   * Toggle mobile nav dropdowns
+   */
+  document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
+    navmenu.addEventListener('click', function(e) {
+      e.preventDefault();
+      this.parentNode.classList.toggle('active');
+      this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
+      e.stopImmediatePropagation();
+    });
+  });
+
+  /**
+   * Scroll top button
+   */
+  let scrollTop = document.querySelector('.scroll-top');
+
+  function toggleScrollTop() {
+    if (scrollTop) {
+      window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
+    }
+  }
+  scrollTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  window.addEventListener('load', toggleScrollTop);
+  document.addEventListener('scroll', toggleScrollTop);
+
+  /**
+   * Animation on scroll function and init
+   */
+  function aosInit() {
+    AOS.init({
+      duration: 600,
+      easing: 'ease-in-out',
+      once: true,
+      mirror: false
+    });
+  }
+  window.addEventListener('load', aosInit);
+
+  /**
+   * Initiate glightbox
+   */
+  const glightbox = GLightbox({
+    selector: '.glightbox'
+  });
+
+  /**
+   * Init swiper sliders
+   */
+  function initSwiper() {
+    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+      let config = JSON.parse(
+        swiperElement.querySelector(".swiper-config").innerHTML.trim()
+      );
+
+      if (swiperElement.classList.contains("swiper-tab")) {
+        initSwiperWithCustomPagination(swiperElement, config);
+      } else {
+        new Swiper(swiperElement, config);
+      }
+    });
+  }
+
+  window.addEventListener("load", initSwiper);
+
+  /**
+   * Initiate Pure Counter
+   */
+  new PureCounter();
+
+  /*
+   * Pricing Toggle
+   */
+
+  const pricingContainers = document.querySelectorAll('.pricing-toggle-container');
+
+  pricingContainers.forEach(function(container) {
+    const pricingSwitch = container.querySelector('.pricing-toggle input[type="checkbox"]');
+    const monthlyText = container.querySelector('.monthly');
+    const yearlyText = container.querySelector('.yearly');
+
+    pricingSwitch.addEventListener('change', function() {
+      const pricingItems = container.querySelectorAll('.pricing-item');
+
+      if (this.checked) {
+        monthlyText.classList.remove('active');
+        yearlyText.classList.add('active');
+        pricingItems.forEach(item => {
+          item.classList.add('yearly-active');
+        });
+      } else {
+        monthlyText.classList.add('active');
+        yearlyText.classList.remove('active');
+        pricingItems.forEach(item => {
+          item.classList.remove('yearly-active');
+        });
+      }
+    });
+  });
+
+  /**
+   * Frequently Asked Questions Toggle
+   */
+  document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle, .faq-item .faq-header').forEach((faqItem) => {
+    faqItem.addEventListener('click', () => {
+      faqItem.parentNode.classList.toggle('faq-active');
+    });
+  });
+
+  /**
+   * Correct scrolling position upon page load for URLs containing hash links.
+   */
+  window.addEventListener('load', function(e) {
+    if (window.location.hash) {
+      if (document.querySelector(window.location.hash)) {
+        setTimeout(() => {
+          let section = document.querySelector(window.location.hash);
+          let scrollMarginTop = getComputedStyle(section).scrollMarginTop;
+          window.scrollTo({
+            top: section.offsetTop - parseInt(scrollMarginTop),
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    }
+  });
+
+  /**
+   * Navmenu Scrollspy
+   */
+  let navmenulinks = document.querySelectorAll('.navmenu a');
+
+  function navmenuScrollspy() {
+    navmenulinks.forEach(navmenulink => {
+      if (!navmenulink.hash) return;
+      let section = document.querySelector(navmenulink.hash);
+      if (!section) return;
+      let position = window.scrollY + 200;
+      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
+        document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
+        navmenulink.classList.add('active');
+      } else {
+        navmenulink.classList.remove('active');
+      }
+    })
+  }
+  window.addEventListener('load', navmenuScrollspy);
+  document.addEventListener('scroll', navmenuScrollspy);
+
+})();
+
+
+
+    function filterJobs() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const type = document.getElementById('jobType').value;
+      const location = document.getElementById('jobLocation').value;
+      const jobs = document.querySelectorAll('.job-card');
+
+      jobs.forEach(job => {
+        const title = job.dataset.title.toLowerCase();
+        const jobType = job.dataset.type;
+        const jobLocation = job.dataset.location;
+        const matchesSearch = title.includes(search);
+        const matchesType = type === 'all' || jobType === type;
+        const matchesLocation = location === 'all' || jobLocation === location;
+
+        if (matchesSearch && matchesType && matchesLocation) {
+          job.style.display = 'flex';
+        } else {
+          job.style.display = 'none';
+        }
+      });
+    }
+
+
+
+      setTimeout(() => {
+            const btn = document.getElementById('whatsappBtn');
+            btn.classList.remove('pulse');
+        }, 10000); // Remove pulse after 10 seconds
+
+        // Optional: Add click tracking
+        document.getElementById('whatsappBtn').addEventListener('click', function() {
+            console.log('WhatsApp button clicked!');
+            // You can add analytics tracking here
+        });
+
+    
+    
+  
+      function toggleLike(btn) {
+            const countElement = btn.nextElementSibling;
+            let count = parseInt(countElement.textContent);
+            
+            if (btn.textContent === '♡') {
+                btn.textContent = '♥';
+                btn.classList.add('active');
+                count++;
+            } else {
+                btn.textContent = '♡';
+                btn.classList.remove('active');
+                count--;
+            }
+            
+            countElement.textContent = count;
+            
+            setTimeout(() => {
+                btn.classList.remove('active');
+            }, 300);
+        }
+
+ document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('like-btn')) {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 100);
+                }
+            });
+        });
+    
